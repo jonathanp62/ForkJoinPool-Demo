@@ -65,9 +65,9 @@ public class RecursiveActionDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        this.capitalizerAction();
-
         if (this.logger.isInfoEnabled()) {
+            this.logger.info(this.capitalizerAction());
+
             final double[] results = this.squareRootAction();
 
             for (final double result : results) {
@@ -85,8 +85,10 @@ public class RecursiveActionDemo implements Demo {
      * using execute. Execute does not
      * return a ForkJoinTask so there is
      * nothing to wait on.
+     *
+     * @return  java.lang.String
      */
-    private void capitalizerAction() {
+    private String capitalizerAction() {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entry());
         }
@@ -99,8 +101,10 @@ public class RecursiveActionDemo implements Demo {
                 "occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim " +
                 "id est laborum.";
 
+        final char[] characters = sentences.toCharArray();
+
         try (final ForkJoinPool forkJoinPool = ForkJoinPool.commonPool()) {
-            forkJoinPool.execute(new CapitalizerAction(sentences, 12));
+            forkJoinPool.execute(new CapitalizerAction(characters, 0, characters.length, 32));
 
             try {
                 Thread.sleep(200);
@@ -110,9 +114,13 @@ public class RecursiveActionDemo implements Demo {
             }
         }
 
+        final String result = new String(characters);
+
         if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exit());
+            this.logger.trace(exitWith(result));
         }
+
+        return result;
     }
 
     /**

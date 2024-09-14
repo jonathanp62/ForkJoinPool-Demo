@@ -49,8 +49,14 @@ public final class CapitalizerAction extends RecursiveAction {
     /** The logger. */
     private final transient Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
-    /** The string to capitalize. */
-    private final String string;
+    /** The character array to capitalize. */
+    private final char[] characters;
+
+    /** The starting point in the array. */
+    private final int start;
+
+    /** The ending point in the array. */
+    private final int end;
 
     /** The threshold for the creation of subtasks. */
     private final int workloadThreshold;
@@ -58,13 +64,20 @@ public final class CapitalizerAction extends RecursiveAction {
     /**
      * The constructor.
      *
-     * @param   string              java.lang.String
+     * @param   characters          char[]
+     * @param   start               int
+     * @param   end                 int
      * @param   workloadThreshold   int
      */
-    public CapitalizerAction(final String string, final int workloadThreshold) {
+    public CapitalizerAction(final char[] characters,
+                             final int start,
+                             final int end,
+                             final int workloadThreshold) {
         super();
 
-        this.string = Objects.requireNonNull(string);
+        this.characters = Objects.requireNonNull(characters);
+        this.start = start;
+        this.end = end;
         this.workloadThreshold = workloadThreshold;
     }
 
@@ -77,10 +90,10 @@ public final class CapitalizerAction extends RecursiveAction {
             this.logger.trace(entry());
         }
 
-        if (this.string.length() > this.workloadThreshold) {
-            ForkJoinTask.invokeAll(this.createSubtasks());
-        } else {
+        if ((this.end - this.start) < this.workloadThreshold) {
             this.processWorkload();
+        } else {
+            ForkJoinTask.invokeAll(this.createSubtasks());
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -100,11 +113,10 @@ public final class CapitalizerAction extends RecursiveAction {
 
         final List<CapitalizerAction> subtasks = new ArrayList<>();
 
-        final String left = this.string.substring(0, this.string.length() / 2);
-        final String right = this.string.substring(this.string.length() / 2);
+        final int middle = (this.start + this.end) / 2;
 
-        subtasks.add(new CapitalizerAction(left, this.workloadThreshold));
-        subtasks.add(new CapitalizerAction(right, this.workloadThreshold));
+        subtasks.add(new CapitalizerAction(this.characters, this.start, middle, this.workloadThreshold));
+        subtasks.add(new CapitalizerAction(this.characters, middle, this.end, this.workloadThreshold));
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(subtasks));
@@ -121,10 +133,12 @@ public final class CapitalizerAction extends RecursiveAction {
             this.logger.trace(entry());
         }
 
-        final String result = this.string.toUpperCase();
+        for (int i = 0; i < this.characters.length; i++) {
+            this.characters[i] = Character.toUpperCase(this.characters[i]);
 
-        if (this.logger.isDebugEnabled()) {
-            this.logger.debug("{}: {}", result, Thread.currentThread().getName());
+            if (this.logger.isDebugEnabled()) {
+                this.logger.debug("{}: {}", this.characters[i], Thread.currentThread().getName());
+            }
         }
 
         if (this.logger.isTraceEnabled()) {
