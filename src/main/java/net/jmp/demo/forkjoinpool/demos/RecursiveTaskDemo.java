@@ -1,13 +1,11 @@
-package net.jmp.demo.forkjoinpool;
+package net.jmp.demo.forkjoinpool.demos;
 
 /*
- * (#)Main.java 0.3.0   09/14/2024
- * (#)Main.java 0.2.0   09/14/2024
- * (#)Main.java 0.1.0   09/14/2024
+ * (#)RecursiveTaskDemo.java    0.3.0   09/14/2024
  *
  * @author   Jonathan Parker
  * @version  0.3.0
- * @since    0.1.0
+ * @since    0.3.0
  *
  * MIT License
  *
@@ -32,11 +30,10 @@ package net.jmp.demo.forkjoinpool;
  * SOFTWARE.
  */
 
-import java.util.Objects;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
 
-import java.util.stream.Stream;
-
-import net.jmp.demo.forkjoinpool.demos.*;
+import net.jmp.demo.forkjoinpool.tasks.SumTask;
 
 import static net.jmp.demo.forkjoinpool.util.LoggerUtils.*;
 
@@ -44,42 +41,31 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The main class.
+ * A class the demonstrates the recursive task.
  */
-final class Main implements Runnable {
+public final class RecursiveTaskDemo implements Demo {
     /** The logger. */
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
-    /** The command line arguments. */
-    private final String[] arguments;
-
     /**
-     * A constructor that takes the
-     * command line arguments from
-     * the bootstrap class.
+     * The default constructor.
      */
-    Main(final String[] args) {
+    public RecursiveTaskDemo() {
         super();
-
-        this.arguments = Objects.requireNonNull(args);
     }
 
     /**
-     * The run method.
+     * The demo method.
      */
     @Override
-    public void run() {
+    public void demo() {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entry());
         }
 
-        if (this.logger.isInfoEnabled() || this.logger.isWarnEnabled() || this.logger.isErrorEnabled()) {
-            System.out.format("%s %s%n", Name.NAME_STRING, Version.VERSION_STRING);
-        } else {
-            this.logger.debug("{} {}", Name.NAME_STRING, Version.VERSION_STRING);
+        if (this.logger.isInfoEnabled()) {
+            this.logger.info("Sum: {}", this.sumTask());
         }
-
-        this.runDemos();
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exit());
@@ -87,22 +73,34 @@ final class Main implements Runnable {
     }
 
     /**
-     * Method that runs the demo classes.
+     * Demonstrate the task that sums
+     * the integers in an array.
+     *
+     * @return  int
      */
-    private void runDemos() {
+    private int sumTask() {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entry());
         }
 
-        Stream<Demo> demos = Stream.of(
-                new RecursiveActionDemo(),
-                new RecursiveTaskDemo()
-        );
+        int result;
 
-        demos.forEach(Demo::demo);
+        final int[] integers = new int[1_000];
+
+        for (int i = 0; i < 1_000; i++) {
+            integers[i] = i + 1;
+        }
+
+        try (final ForkJoinPool forkJoinPool = ForkJoinPool.commonPool()) {
+            final ForkJoinTask<Integer> task = forkJoinPool.submit(new SumTask(integers));
+
+            result = task.join();
+        }
 
         if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exit());
+            this.logger.trace(exitWith(result));
         }
+
+        return result;
     }
 }
