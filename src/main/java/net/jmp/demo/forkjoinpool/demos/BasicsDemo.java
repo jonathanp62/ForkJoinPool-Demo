@@ -64,6 +64,7 @@ public class BasicsDemo implements Demo {
         }
 
         this.capitalizerAction();
+        this.squareRootAction();
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exit());
@@ -103,6 +104,22 @@ public class BasicsDemo implements Demo {
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exit());
+        }
+    }
+
+    /**
+     * Demonstrate the square root action
+     * using submit. Submit does return
+     * a ForkJoinTask so there is something
+     * to wait on.
+     */
+    private void squareRootAction() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
         }
     }
 }
