@@ -30,6 +30,11 @@ package net.jmp.demo.forkjoinpool.demos;
  * SOFTWARE.
  */
 
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
+
+import net.jmp.demo.forkjoinpool.actions.CapitalizerAction;
+
 import static net.jmp.demo.forkjoinpool.util.LoggerUtils.*;
 
 import org.slf4j.Logger;
@@ -58,8 +63,42 @@ public class BasicsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        if (this.logger.isInfoEnabled()) {
-            this.logger.info("Hello!");
+        this.capitalizerAction();
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exit());
+        }
+    }
+
+    /**
+     * Demonstrate the capitalizer action
+     * using execute. Execute does not
+     * return a ForkJoinTask so there is
+     * nothing to wait on.
+     */
+    private void capitalizerAction() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final String sentences = "Lorem ipsum dolor sit amet, consectetur adipiscing " +
+                "elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " +
+                "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut " +
+                "aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in " +
+                "voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint " +
+                "occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim " +
+                "id est laborum.";
+
+        try (final ForkJoinPool forkJoinPool = ForkJoinPool.commonPool()) {
+//            final ForkJoinTask<Void> task = forkJoinPool.submit(new CapitalizerAction(sentences, 12));
+            forkJoinPool.execute(new CapitalizerAction(sentences, 12));
+
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+//            task.join();
         }
 
         if (this.logger.isTraceEnabled()) {

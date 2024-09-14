@@ -1,11 +1,11 @@
-package net.jmp.demo.forkjoinpool.demos;
+package net.jmp.demo.forkjoinpool.actions;
 
 /*
- * (#)package-info.java 0.1.0   09/14/2024
+ * (#)package-info.java 0.2.0   09/14/2024
  *
  * @author    Jonathan Parker
- * @version   0.1.0
- * @since     0.1.0
+ * @version   0.2.0
+ * @since     0.2.0
  *
  * MIT License
  *
