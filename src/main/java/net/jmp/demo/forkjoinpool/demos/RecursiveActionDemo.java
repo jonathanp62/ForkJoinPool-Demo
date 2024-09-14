@@ -107,7 +107,7 @@ public class RecursiveActionDemo implements Demo {
             forkJoinPool.execute(new CapitalizerAction(characters, 0, characters.length, 32));
 
             try {
-                Thread.sleep(200);
+                Thread.sleep(350);
             } catch (final InterruptedException ie) {
                 this.logger.error(ie.getMessage(), ie);
                 Thread.currentThread().interrupt();
