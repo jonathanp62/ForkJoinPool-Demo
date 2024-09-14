@@ -123,8 +123,8 @@ public final class CapitalizerAction extends RecursiveAction {
 
         final String result = this.string.toUpperCase();
 
-        if (this.logger.isInfoEnabled()) {
-            this.logger.info("{}: {}", result, Thread.currentThread().getName());
+        if (this.logger.isDebugEnabled()) {
+            this.logger.debug("{}: {}", result, Thread.currentThread().getName());
         }
 
         if (this.logger.isTraceEnabled()) {

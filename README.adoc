@@ -10,8 +10,9 @@ Logging is achieved using the SLF4J facade over Logback. The logging configurati
 
 == Demonstrated Concepts
 
-* Basics
-  - RecursiveAction
+* RecursiveAction
+  - CapitalizerAction
+  - SquareRootAction
 
 == Additional Features
 

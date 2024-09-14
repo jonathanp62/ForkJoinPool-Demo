@@ -1,10 +1,11 @@
 package net.jmp.demo.forkjoinpool.demos;
 
 /*
- * (#)BasicsDemo.java   0.1.0   09/14/2024
+ * (#)RecursiveActionDemo.java  0.2.0   09/14/2024
+ * (#)RecursiveActionDemo.java  0.1.0   09/14/2024
  *
  * @author   Jonathan Parker
- * @version  0.1.0
+ * @version  0.2.0
  * @since    0.1.0
  *
  * MIT License
@@ -34,6 +35,7 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 
 import net.jmp.demo.forkjoinpool.actions.CapitalizerAction;
+import net.jmp.demo.forkjoinpool.actions.SquareRootAction;
 
 import static net.jmp.demo.forkjoinpool.util.LoggerUtils.*;
 
@@ -41,16 +43,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A class the demonstrates the basics.
+ * A class the demonstrates the recursive action.
  */
-public class BasicsDemo implements Demo {
+public class RecursiveActionDemo implements Demo {
     /** The logger. */
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     /**
      * The default constructor.
      */
-    public BasicsDemo() {
+    public RecursiveActionDemo() {
         super();
     }
 
@@ -64,7 +66,14 @@ public class BasicsDemo implements Demo {
         }
 
         this.capitalizerAction();
-        this.squareRootAction();
+
+        if (this.logger.isInfoEnabled()) {
+            final double[] results = this.squareRootAction();
+
+            for (final double result : results) {
+                this.logger.info("{}", String.format("%.4f ", result));
+            }
+        }
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exit());
@@ -91,15 +100,14 @@ public class BasicsDemo implements Demo {
                 "id est laborum.";
 
         try (final ForkJoinPool forkJoinPool = ForkJoinPool.commonPool()) {
-//            final ForkJoinTask<Void> task = forkJoinPool.submit(new CapitalizerAction(sentences, 12));
             forkJoinPool.execute(new CapitalizerAction(sentences, 12));
 
             try {
                 Thread.sleep(200);
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException ie) {
+                this.logger.error(ie.getMessage(), ie);
                 Thread.currentThread().interrupt();
             }
-//            task.join();
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -112,14 +120,34 @@ public class BasicsDemo implements Demo {
      * using submit. Submit does return
      * a ForkJoinTask so there is something
      * to wait on.
+     *
+     * @return  double[]
      */
-    private void squareRootAction() {
+    private double[] squareRootAction() {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entry());
         }
 
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entry());
+        final double[] doubles = new double[100_000];
+
+        for (int i = 0; i < doubles.length; i++) {
+            doubles[i] = i;
         }
+
+        try (final ForkJoinPool forkJoinPool = ForkJoinPool.commonPool()) {
+            final ForkJoinTask<Void> task = forkJoinPool.submit(new SquareRootAction(doubles, 0, doubles.length));
+
+            task.join();
+        }
+
+        final double[] results = new double[10];
+
+        System.arraycopy(doubles, 0, results, 0, results.length);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(results));
+        }
+
+        return results;
     }
 }
