@@ -1,5 +1,5 @@
 ForkJoinPool-Demo
-------------
+-----------------
 
 A program that demonstrates various techniques using the Java ForkJoinPool.
 
