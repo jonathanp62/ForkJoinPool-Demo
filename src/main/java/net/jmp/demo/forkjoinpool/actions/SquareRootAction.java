@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class SquareRootAction extends RecursiveAction {
     /** The logger. */
-    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+    private final transient Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     /** The threshold for the creation of subtasks. */
     private final int workloadThreshold = 1_000;

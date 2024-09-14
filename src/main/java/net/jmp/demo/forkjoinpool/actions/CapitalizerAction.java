@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class CapitalizerAction extends RecursiveAction {
     /** The logger. */
-    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+    private final transient Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     /** The string to capitalize. */
     private final String string;
