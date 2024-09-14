@@ -13,6 +13,7 @@ Logging is achieved using the SLF4J facade over Logback. The logging configurati
 * RecursiveAction
   - CapitalizerAction
   - SquareRootAction
+* RecursiveTask
 
 == Additional Features
 
@@ -27,5 +28,5 @@ Gradle JavaExec Tasks
 |execute                |No arguments
 |=======================
 
-Current version: 0.2.0.
+Current version: 0.3.0.
 ~~~~~~~~~~~~~~~~~~~~~~~
