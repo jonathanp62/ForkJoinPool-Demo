@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Objects;
 
 import java.util.concurrent.ForkJoinTask;
-import java.util.concurrent.RecursiveAction;
 import java.util.concurrent.RecursiveTask;
 
 import static net.jmp.demo.forkjoinpool.util.LoggerUtils.*;
@@ -91,7 +90,7 @@ public final class SumTask extends RecursiveTask<Integer> {
         }
 
         if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith (result));
+            this.logger.trace(exitWith(result));
         }
 
         return result;
