@@ -30,9 +30,13 @@ package net.jmp.demo.forkjoinpool.demos;
  * SOFTWARE.
  */
 
+import java.util.Map;
+
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 
+import net.jmp.demo.forkjoinpool.tasks.LetterDistributionTask;
 import net.jmp.demo.forkjoinpool.tasks.SumTask;
 
 import static net.jmp.demo.forkjoinpool.util.LoggerUtils.*;
@@ -65,6 +69,7 @@ public final class RecursiveTaskDemo implements Demo {
 
         if (this.logger.isInfoEnabled()) {
             this.logger.info("Sum: {}", this.sumTask());
+            this.logger.info("Letters: {}", this.letterDistributionTask());
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -102,5 +107,30 @@ public final class RecursiveTaskDemo implements Demo {
         }
 
         return result;
+    }
+
+    /**
+     * Demonstrate the task that counts
+     * the occurrences of each letter in
+     * an array of characters.
+     */
+    private Map<Character, Integer> letterDistributionTask() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Map<Character, Integer> letterDistribution = new ConcurrentHashMap<>();
+
+        final String test = "abBcCcdDdDeEeEefFfFfFgGgGgGghHhHhHhHiIiIiIiIijJjJjJjJjJkKkKkKkKkKklLlLlLlLlLlL";
+
+        try (final ForkJoinPool forkJoinPool = ForkJoinPool.commonPool()) {
+            forkJoinPool.invoke(new LetterDistributionTask(test.toCharArray(), letterDistribution));
+        }
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(letterDistribution));
+        }
+
+        return letterDistribution;
     }
 }

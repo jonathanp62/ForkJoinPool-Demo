@@ -40,6 +40,8 @@ import java.util.concurrent.RecursiveTask;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 
+import java.util.stream.Stream;
+
 import static net.jmp.demo.forkjoinpool.util.LoggerUtils.*;
 
 import org.slf4j.Logger;
@@ -59,7 +61,7 @@ public final class LetterDistributionTask extends RecursiveTask<Void> {
     private final char[] characters;
 
     /** The workload threshold. */
-    private final int workloadThreshold = 20;
+    private final int workloadThreshold = 5;
 
     /** The map of letter distributions. */
     private final Map<Character, Integer> letters;
@@ -141,26 +143,23 @@ public final class LetterDistributionTask extends RecursiveTask<Void> {
             this.logger.trace(entry());
         }
 
-        for (final char character : this.characters) {
-            if (Character.isLetter(character)) {
-                final char letter = Character.toLowerCase(character);
-                final Lock lock = this.locks.get(letter).writeLock();
+        final Stream<Character> stream = new String(this.characters)
+                .chars()
+                .mapToObj(i -> (char) i);
 
-                lock.lock();
+        stream.filter(Character::isLetter)
+                .forEach(character -> {
+                    final char letter = Character.toLowerCase(character);
+                    final Lock lock = this.locks.get(letter).writeLock();
 
-                try {
-                    Integer count = this.letters.get(letter);
+                    lock.lock();
 
-                    if (count == null) {
-                        this.letters.put(letter, 1);
-                    } else {
-                        this.letters.put(letter, ++count);
+                    try {
+                        this.letters.merge(letter, 1, Integer::sum);
+                    } finally {
+                        lock.unlock();
                     }
-                } finally {
-                    lock.unlock();
-                }
-            }
-        }
+                });
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exit());

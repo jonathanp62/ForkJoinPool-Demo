@@ -30,6 +30,8 @@ package net.jmp.demo.forkjoinpool.demos;
  * SOFTWARE.
  */
 
+import java.util.Map;
+
 import static org.junit.Assert.*;
 
 import org.junit.Test;
@@ -47,5 +49,33 @@ public final class TestRecursiveTaskDemo {
 
         assertNotNull(result);
         assertEquals(500_500, (long) result);
+    }
+
+    @Test
+    public void testLetterDistributionTask() throws Exception {
+        final var demo = new RecursiveTaskDemo();
+        final var method = RecursiveTaskDemo.class.getDeclaredMethod("letterDistributionTask");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+
+        @SuppressWarnings("unchecked")
+        final Map<Character, Integer> results = (Map<Character, Integer>) o;
+
+        assertNotNull(results);
+        assertEquals(12, results.entrySet().size());
+        assertEquals(1, (long) results.get('a'));
+        assertEquals(2, (long) results.get('b'));
+        assertEquals(3, (long) results.get('c'));
+        assertEquals(4, (long) results.get('d'));
+        assertEquals(5, (long) results.get('e'));
+        assertEquals(6, (long) results.get('f'));
+        assertEquals(7, (long) results.get('g'));
+        assertEquals(8, (long) results.get('h'));
+        assertEquals(9, (long) results.get('i'));
+        assertEquals(10, (long) results.get('j'));
+        assertEquals(11, (long) results.get('k'));
+        assertEquals(12, (long) results.get('l'));
     }
 }
