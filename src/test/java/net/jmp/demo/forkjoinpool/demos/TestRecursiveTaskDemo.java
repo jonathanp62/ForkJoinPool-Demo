@@ -30,6 +30,7 @@ package net.jmp.demo.forkjoinpool.demos;
  * SOFTWARE.
  */
 
+import java.math.BigInteger;
 import java.util.Map;
 
 import static org.junit.Assert.*;
@@ -77,5 +78,19 @@ public final class TestRecursiveTaskDemo {
         assertEquals(10, (long) results.get('j'));
         assertEquals(11, (long) results.get('k'));
         assertEquals(12, (long) results.get('l'));
+    }
+
+    @Test
+    public void testFactorialTask() throws Exception {
+        final var demo = new RecursiveTaskDemo();
+        final var method = RecursiveTaskDemo.class.getDeclaredMethod("factorialTask");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final BigInteger result = (BigInteger) o;
+
+        assertNotNull(result);
+        assertEquals(20_922_789_888_000L, result.longValue());
     }
 }

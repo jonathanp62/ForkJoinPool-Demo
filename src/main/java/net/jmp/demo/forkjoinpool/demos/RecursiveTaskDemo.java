@@ -30,12 +30,15 @@ package net.jmp.demo.forkjoinpool.demos;
  * SOFTWARE.
  */
 
+import java.math.BigInteger;
+
 import java.util.Map;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 
+import net.jmp.demo.forkjoinpool.tasks.FactorialTask;
 import net.jmp.demo.forkjoinpool.tasks.LetterDistributionTask;
 import net.jmp.demo.forkjoinpool.tasks.SumTask;
 
@@ -70,6 +73,7 @@ public final class RecursiveTaskDemo implements Demo {
         if (this.logger.isInfoEnabled()) {
             this.logger.info("Sum: {}", this.sumTask());
             this.logger.info("Letters: {}", this.letterDistributionTask());
+            this.logger.info("16!: {}", this.factorialTask());
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -113,6 +117,8 @@ public final class RecursiveTaskDemo implements Demo {
      * Demonstrate the task that counts
      * the occurrences of each letter in
      * an array of characters.
+     *
+     * @return  java.util.Map&lt;java.lang.Character, java.lang.Integer&gt;
      */
     private Map<Character, Integer> letterDistributionTask() {
         if (this.logger.isTraceEnabled()) {
@@ -132,5 +138,26 @@ public final class RecursiveTaskDemo implements Demo {
         }
 
         return letterDistribution;
+    }
+
+    /**
+     * Demonstrate the factorial task.
+     *
+     * @return  java.math.BigInteger
+     */
+    private BigInteger factorialTask() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        // Uses the ForkJoinPool
+
+        final BigInteger result = new FactorialTask(1, 16).invoke();
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return result;
     }
 }
