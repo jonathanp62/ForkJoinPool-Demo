@@ -1,10 +1,11 @@
 package net.jmp.demo.forkjoinpool.tasks;
 
 /*
+ * (#)FactorialTask.java    0.4.0   09/24/2024
  * (#)FactorialTask.java    0.3.0   09/16/2024
  *
  * @author    Jonathan Parker
- * @version   0.3.0
+ * @version   0.4.0
  * @since     0.3.0
  *
  * MIT License
@@ -32,10 +33,9 @@ package net.jmp.demo.forkjoinpool.tasks;
 
 import java.math.BigInteger;
 
-import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveTask;
 
-import static net.jmp.demo.forkjoinpool.util.LoggerUtils.*;
+import static net.jmp.util.logging.LoggerUtils.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

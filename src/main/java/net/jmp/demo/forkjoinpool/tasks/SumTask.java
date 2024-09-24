@@ -1,10 +1,11 @@
 package net.jmp.demo.forkjoinpool.tasks;
 
 /*
+ * (#)CapitalizerAction.java    0.4.0   09/24/2024
  * (#)CapitalizerAction.java    0.2.0   09/14/2024
  *
  * @author    Jonathan Parker
- * @version   0.2.0
+ * @version   0.4.0
  * @since     0.2.0
  *
  * MIT License
@@ -38,7 +39,7 @@ import java.util.Objects;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveTask;
 
-import static net.jmp.demo.forkjoinpool.util.LoggerUtils.*;
+import static net.jmp.util.logging.LoggerUtils.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
